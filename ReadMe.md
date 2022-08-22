@@ -23,12 +23,18 @@
 
 - APP (команда старта работы - "quasar build")
 
+  - Установиь Quasar
+  - Запустить команду npm install
   - Сменить в файле src/services/base.service.js значение переменной api на используемый хост
   - Сменить в файле src/services/auth.service.js значение переменной api на используемый хост
   - Запустить команду сборки
 
 - API (команда сборки - "npm run")
 
+  - Установить Node.js
+  - Установить Prisma ORM
+  - Установить PostgreSQL
+  - Запустить команду npm install
   - Задать переменную окружения NOTIFY_APP_BASE в виде "postgresql://login:pass@host:port/baseName?shema=public"
   - Создать базу
   - Запустить миграцию командой npx prisma migrate deploy
