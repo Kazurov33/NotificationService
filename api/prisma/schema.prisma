@@ -1,0 +1,76 @@
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native"]
+  previewFeatures = ["referentialActions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NOTIFY_APP_BASE")
+}
+
+model User {
+  Login    String  @id @unique @db.VarChar(100)
+  Password String  @db.VarChar(255)
+  Name     String  @db.VarChar(100)
+  Email    String? @db.VarChar(100)
+  RoleID   Int
+  Role     Role    @relation(fields: [RoleID], references: [Key], onDelete: SetNull)
+  Event    Event[]
+}
+
+model Receiver {
+  ReceiverID String     @id @unique @db.VarChar(100)
+  Email      String?    @db.VarChar(100)
+  TelegramID String?    @db.VarChar(100)
+  Events     Event[]
+  Profiles   Profiles[]
+}
+
+model Event {
+  nnEvent      Int       @id @default(autoincrement())
+  CreationDate DateTime  @db.Timestamp(0)
+  CreatorLogin String    @db.VarChar(100)
+  ReceiverID   String?   @db.VarChar(100)
+  SystemID     String?   @db.VarChar(255)
+  Text         String
+  EventTypeID  Int
+  isRead       Boolean   @default(false)
+  User         User      @relation(fields: [CreatorLogin], references: [Login], onDelete: SetNull)
+  EventType    EventType @relation(fields: [EventTypeID], references: [Key], onDelete: SetNull)
+  System       System?   @relation(fields: [SystemID], references: [Key], onDelete: SetNull)
+  Receiver     Receiver? @relation(fields: [ReceiverID], references: [ReceiverID], onDelete: SetNull)
+}
+
+model Role {
+  ID   Int    @id @default(autoincrement())
+  Key  Int    @unique
+  Name String @db.VarChar(100)
+  User User[]
+}
+
+model System {
+  ID       Int        @id @default(autoincrement())
+  Name     String     @db.VarChar(100)
+  Key      String     @unique @db.VarChar(255)
+  Event    Event[]
+  Profiles Profiles[]
+}
+
+model EventType {
+  ID           Int     @id @default(autoincrement())
+  Key          Int     @unique
+  Name         String  @db.VarChar(100)
+  DefaultColor String  @db.VarChar(30)
+  Event        Event[]
+}
+
+model Profiles {
+  ID         Int      @id @default(autoincrement())
+  ReceiverID String   @db.VarChar(100)
+  SystemID   String   @db.VarChar(255)
+  isTelegram Boolean  @default(false)
+  isEmail    Boolean  @default(false)
+  System     System   @relation(fields: [SystemID], references: [Key], onDelete: SetNull)
+  Receiver   Receiver @relation(fields: [ReceiverID], references: [ReceiverID], onDelete: SetNull)
+}
