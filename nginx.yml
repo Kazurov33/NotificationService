@@ -1,0 +1,4 @@
+- host: apps
+  tasks:
+    - name: Install Nginx
+    apt: pkg=nginx state=present
